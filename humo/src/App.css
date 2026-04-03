@@ -69,7 +69,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all 0.3s ease;
+  transition: padding 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar.scrolled {
@@ -326,8 +326,10 @@
 @media (max-width: 999px) {
   .nav-links { display: none; }
   .menu-toggle { display: flex; }
-  .navbar { padding: 16px 24px; }
-  .navbar.scrolled { padding: 12px 24px; }
+  .navbar { padding: 16px 20px; }
+  .navbar.scrolled { padding: 10px 20px; }
+  .navbar-logo img { height: 44px; }
+  .navbar.scrolled .navbar-logo img { height: 36px; }
 }
 
 @media (max-width: 380px) {
