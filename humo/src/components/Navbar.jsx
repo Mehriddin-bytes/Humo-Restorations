@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { IMG } from '../shared'
 
@@ -7,11 +7,21 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileDropdown, setMobileDropdown] = useState(null)
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
+  const ticking = useRef(false)
+  const onScroll = useCallback(() => {
+    if (!ticking.current) {
+      ticking.current = true
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 60)
+        ticking.current = false
+      })
+    }
   }, [])
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [onScroll])
 
   useEffect(() => {
     if (menuOpen) {

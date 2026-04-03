@@ -69,7 +69,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: padding 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  transition: padding 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  will-change: background, box-shadow;
 }
 
 .navbar.scrolled {
@@ -654,12 +655,15 @@
   padding: 4px 0;
   overflow: hidden;
   background: var(--gray-100);
+  contain: layout style paint;
 }
 
 .carousel-track {
   display: flex; gap: 4px;
   width: max-content;
   will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .carousel-track.scroll-left { animation: scrollL 60s linear infinite; }
