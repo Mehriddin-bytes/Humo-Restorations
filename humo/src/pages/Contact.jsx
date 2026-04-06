@@ -41,13 +41,29 @@ export default function Contact() {
   const [whyRef, whyVis] = useReveal(0.05)
 
   const [form, setForm] = useState({ name: '', phone: '', email: '', service: '', heardFrom: '', subject: '', message: '' })
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
   const update = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const { name, phone, email, service, heardFrom, subject, message } = form
-    const body = `Name: ${name}%0APhone: ${phone}%0AEmail: ${email}%0AService: ${service}%0AHeard From: ${heardFrom}%0ASubject: ${subject}%0A%0A${message}`
-    window.location.href = `mailto:info@humorestorations.ca?subject=${encodeURIComponent(subject || 'Website Inquiry')}&body=${body}`
+    setSending(true)
+    setError('')
+    try {
+      const res = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) throw new Error()
+      setSent(true)
+      setForm({ name: '', phone: '', email: '', service: '', heardFrom: '', subject: '', message: '' })
+    } catch {
+      setError('Something went wrong. Please try again or email us directly at info@humorestorations.ca')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -105,8 +121,10 @@ export default function Contact() {
                     ))}
                   </div>
                 </div>
-                <button type="submit" className="btn-slide btn-dark">
-                  <span className="btn-arrow">&#8594;</span> Send Message
+                {error && <p className="contact-error">{error}</p>}
+                {sent && <p className="contact-success">Message sent successfully! We'll get back to you shortly.</p>}
+                <button type="submit" className="btn-slide btn-dark" disabled={sending}>
+                  <span className="btn-arrow">&#8594;</span> {sending ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>
